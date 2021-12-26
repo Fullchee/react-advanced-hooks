@@ -10,6 +10,17 @@ import {
   PokemonErrorBoundary,
 } from '../pokemon'
 
+function useIsMountedRef() {
+  const isMountedRef = React.useRef(false)
+  React.useEffect(() => {
+    isMountedRef.current = true
+    return () => {
+      isMountedRef.current = false
+    }
+  }, [])
+  return isMountedRef
+}
+
 function asyncReducer(state, action) {
   switch (action.type) {
     case 'pending': {
@@ -64,6 +75,9 @@ function PokemonInfo({pokemonName}) {
     }
     const pokemonPromise = fetchPokemon(pokemonName)
     run(pokemonPromise)
+    return () => {
+      // prevent dispatch from being called?
+    }
   }, [pokemonName, run])
 
   switch (status) {
