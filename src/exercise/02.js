@@ -10,7 +10,7 @@ import {
   PokemonErrorBoundary,
 } from '../pokemon'
 
-function pokemonInfoReducer(state, action) {
+function asyncReducer(state, action) {
   switch (action.type) {
     case 'pending': {
       return {status: 'pending', data: null, error: null}
@@ -33,10 +33,10 @@ function PokemonInfo({pokemonName}) {
 
   // -------------------------- start --------------------------
 
-  function useAsync(asyncCallback, dependencies) {
+  function useAsync(asyncCallback, initialState, dependencies) {
     // const {pokemon, status, error} = state
-    const [state, dispatch] = React.useReducer(pokemonInfoReducer, {
-      status: pokemonName ? 'pending' : 'idle',
+    const [state, dispatch] = React.useReducer(asyncReducer, {
+      status: 'idle',
       data: null,
       error: null,
     })
@@ -45,6 +45,7 @@ function PokemonInfo({pokemonName}) {
       if (!promise) {
         return
       }
+      dispatch({type: 'pending'})
       promise.then(
         pokemon => {
           dispatch({type: 'resolved', data: pokemon})
@@ -62,12 +63,16 @@ function PokemonInfo({pokemonName}) {
   // --------------------------- end ---------------------------
 
   // 🐨 here's how you'll use the new useAsync hook you're writing:
-  const state = useAsync(() => {
-    if (!pokemonName) {
-      return
-    }
-    return fetchPokemon(pokemonName)
-  }, [pokemonName])
+  const state = useAsync(
+    () => {
+      if (!pokemonName) {
+        return
+      }
+      return fetchPokemon(pokemonName)
+    },
+    {status: pokemonName ? 'pending' : 'idle'},
+    [pokemonName],
+  )
   // 🐨 this will change from "pokemon" to "data"
   const {data, status, error} = state
 
