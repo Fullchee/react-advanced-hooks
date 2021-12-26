@@ -40,12 +40,16 @@ function asyncReducer(state, action) {
 }
 
 function useAsync(initialState) {
-  const [state, dispatch] = React.useReducer(asyncReducer, {
+  const [state, unsafeDispatch] = React.useReducer(asyncReducer, {
     status: 'idle',
     data: null,
     error: null,
     ...initialState,
   })
+
+  const dispatch = React.useCallback((...args) => {
+    return unsafeDispatch(...args)
+  }, [])
 
   const run = React.useCallback(promise => {
     dispatch({type: 'pending'})
