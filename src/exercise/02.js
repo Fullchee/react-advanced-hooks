@@ -11,19 +11,17 @@ import {
 } from '../pokemon'
 
 // 🐨 this is going to be our generic asyncReducer
-function pokemonInfoReducer(state, action) {
+function asyncReducer(state, action) {
   switch (action.type) {
     case 'pending': {
-      // 🐨 replace "pokemon" with "data"
-      return {status: 'pending', pokemon: null, error: null}
+      return {status: 'pending', data: null, error: null}
     }
     case 'resolved': {
-      // 🐨 replace "pokemon" with "data" (in the action too!)
-      return {status: 'resolved', pokemon: action.pokemon, error: null}
+      debugger;
+      return {status: 'resolved', data: action.data, error: null}
     }
     case 'rejected': {
-      // 🐨 replace "pokemon" with "data"
-      return {status: 'rejected', pokemon: null, error: action.error}
+      return {status: 'rejected', data: null, error: action.error}
     }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`)
@@ -40,10 +38,9 @@ function PokemonInfo({pokemonName}) {
 
   // -------------------------- start --------------------------
 
-  const [state, dispatch] = React.useReducer(pokemonInfoReducer, {
+  const [state, dispatch] = React.useReducer(asyncReducer, {
     status: pokemonName ? 'pending' : 'idle',
-    // 🐨 this will need to be "data" instead of "pokemon"
-    pokemon: null,
+    data: null,
     error: null,
   })
 
@@ -60,7 +57,7 @@ function PokemonInfo({pokemonName}) {
     dispatch({type: 'pending'})
     fetchPokemon(pokemonName).then(
       pokemon => {
-        dispatch({type: 'resolved', pokemon})
+        dispatch({type: 'resolved', data: pokemon})
       },
       error => {
         dispatch({type: 'rejected', error})
@@ -80,7 +77,8 @@ function PokemonInfo({pokemonName}) {
   //   return fetchPokemon(pokemonName)
   // }, [pokemonName])
   // 🐨 this will change from "pokemon" to "data"
-  const {pokemon, status, error} = state
+  const {data: pokemon, status, error} = state
+  debugger;
 
   switch (status) {
     case 'idle':
