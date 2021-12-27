@@ -70,8 +70,7 @@ function PokemonInfo({pokemonName}) {
 }
 
 function PreviousPokemon({onSelect}) {
-  // 🐨 get the cache from useContext with PokemonCacheContext
-  const cache = {}
+  const [cache] = usePokemonCache()
   return (
     <div>
       Previous Pokemon
@@ -92,19 +91,19 @@ function PreviousPokemon({onSelect}) {
 }
 
 function PokemonSection({onSelect, pokemonName}) {
-  // 🐨 wrap this in the PokemonCacheProvider so the PreviousPokemon
-  // and PokemonInfo components have access to that context.
   return (
     <div style={{display: 'flex'}}>
-      <PreviousPokemon onSelect={onSelect} />
-      <div className="pokemon-info" style={{marginLeft: 10}}>
-        <PokemonErrorBoundary
-          onReset={() => onSelect('')}
-          resetKeys={[pokemonName]}
-        >
-          <PokemonInfo pokemonName={pokemonName} />
-        </PokemonErrorBoundary>
-      </div>
+      <PokemonCacheProvider>
+        <PreviousPokemon onSelect={onSelect} />
+        <div className="pokemon-info" style={{marginLeft: 10}}>
+          <PokemonErrorBoundary
+            onReset={() => onSelect('')}
+            resetKeys={[pokemonName]}
+          >
+            <PokemonInfo pokemonName={pokemonName} />
+          </PokemonErrorBoundary>
+        </div>
+      </PokemonCacheProvider>
     </div>
   )
 }
@@ -122,11 +121,9 @@ function App() {
 
   return (
     <div className="pokemon-info-app">
-      <PokemonCacheProvider>
-        <PokemonForm pokemonName={pokemonName} onSubmit={handleSubmit} />
-        <hr />
-        <PokemonSection onSelect={handleSelect} pokemonName={pokemonName} />
-      </PokemonCacheProvider>
+      <PokemonForm pokemonName={pokemonName} onSubmit={handleSubmit} />
+      <hr />
+      <PokemonSection onSelect={handleSelect} pokemonName={pokemonName} />
     </div>
   )
 }
