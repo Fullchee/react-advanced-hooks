@@ -46,10 +46,17 @@ function useAsync(initialState) {
     error: null,
     ...initialState,
   })
+  const isMountedRef = useIsMountedRef()
 
-  const dispatch = React.useCallback((...args) => {
-    return unsafeDispatch(...args)
-  }, [])
+  const dispatch = React.useCallback(
+    (...args) => {
+      // prevent dispatch from being called?
+      if (isMountedRef.current) {
+        return unsafeDispatch(...args)
+      }
+    },
+    [isMountedRef],
+  )
 
   const run = React.useCallback(promise => {
     dispatch({type: 'pending'})
