@@ -16,7 +16,7 @@ function CountDisplay() {
 }
 
 function Counter() {
-  const [count, setCount] = React.useContext(CountContext)
+  const [, setCount] = React.useContext(CountContext)
   const increment = () => setCount(c => c + 1)
   return <button onClick={increment}>Increment count</button>
 }
