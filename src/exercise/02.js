@@ -17,7 +17,7 @@ function asyncReducer(state, action) {
       return {status: 'pending', data: null, error: null}
     }
     case 'resolved': {
-      return {status: 'resolved', data: action.pokemon, error: null}
+      return {status: 'resolved', data: action.data, error: null}
     }
     case 'rejected': {
       return {status: 'rejected', data: null, error: action.error}
@@ -55,8 +55,8 @@ function PokemonInfo({pokemonName}) {
     }
     dispatch({type: 'pending'})
     fetchPokemon(pokemonName).then(
-      pokemon => {
-        dispatch({type: 'resolved', pokemon})
+      data => {
+        dispatch({type: 'resolved', data})
       },
       error => {
         dispatch({type: 'rejected', error})
