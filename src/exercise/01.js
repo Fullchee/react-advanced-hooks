@@ -4,10 +4,10 @@
 import * as React from 'react'
 
 function countReducer(state, newState) {
-  debugger
+  const finalState = typeof newState === 'function' ? newState() : newState
   return {
     ...state,
-    ...newState,
+    ...finalState,
   }
 }
 
