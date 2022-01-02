@@ -4,7 +4,7 @@
 import * as React from 'react'
 
 function countReducer(state, newState) {
-  const finalState = typeof newState === 'function' ? newState() : newState
+  const finalState = typeof newState === 'function' ? newState(state) : newState
   return {
     ...state,
     ...finalState,
